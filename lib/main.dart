@@ -4,18 +4,13 @@
 
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'dart:ui';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'dart:async';
-import 'package:path/path.dart';
 import 'package:recipeapp/vegetarianRecipe.dart';
 import 'package:recipeapp/westernRecipe.dart';
-import 'package:sqflite/sqflite.dart';
 import 'easternRecipe.dart';
 import 'westernRecipe.dart';
 import 'vegetarianRecipe.dart';
-import 'package:path_provider/path_provider.dart';
-import 'manageIngredient.dart';
-
 import 'manageIngredient.dart';
 import 'database_helper.dart';
 import 'myIngredientList.dart';
@@ -263,21 +258,55 @@ class MyCardIngList extends StatelessWidget {
                       decoration: new InputDecoration(
                           hintText: 'Name: ' + this.ingName),
                     ),
-                    new TextField(
+//                    new TextField(
+//                      controller: quantityController,
+//                      decoration: new InputDecoration(
+//                          hintText: "Quantity: " + this.ingQuantity),
+//                    ),
+                    TextField(
+                      //obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'Quantity',
+                      ),
+                      keyboardType: TextInputType.number,
                       controller: quantityController,
-                      decoration: new InputDecoration(
-                          hintText: "Quantity: " + this.ingQuantity),
                     ),
+
                     new TextField(
                       controller: unitController,
                       decoration: new InputDecoration(
                           hintText: "Unit: " + this.ingUnit),
                     ),
-                    new TextField(
-                      controller: dateController,
-                      decoration: new InputDecoration(
-                          hintText: "Date: " + this.ingExpiry),
-                    ),
+//                    new TextField(
+//                      controller: dateController,
+//                      decoration: new InputDecoration(
+//                          hintText: "Date: " + this.ingExpiry),
+//                    ),
+
+                    GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          //print('haha');
+                          var currentDate = new DateTime.now();
+                          DatePicker.showDatePicker(context,
+                              showTitleActions: true,
+                              minTime: currentDate, onConfirm: (date) {
+                                dateController.text = date.toString().substring(0, 10);
+
+//                  print('confirm $date');
+                              }, currentTime: DateTime.now(), locale: LocaleType.en);
+                        },
+                        child: TextField(
+                          controller: dateController,
+                          decoration: InputDecoration(
+                            border: OutlineInputBorder(),
+                            labelText: 'Date',
+                            enabled: false,
+                          ),
+                        )),
+
+
                     new FlatButton(
                       child: new Text("Update"),
                       onPressed: () {
