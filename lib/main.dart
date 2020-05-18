@@ -4,16 +4,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
-import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'dart:async';
-import 'package:recipeapp/vegetarianRecipe.dart';
-import 'package:recipeapp/westernRecipe.dart';
-import 'easternRecipe.dart';
-import 'westernRecipe.dart';
-import 'vegetarianRecipe.dart';
-import 'manageIngredient.dart';
 import 'database_helper.dart';
-import 'myIngredientList.dart';
+import 'pageLinks.dart';
 
 void main() => runApp(MyApp());
 
@@ -47,7 +39,7 @@ class RecipeListState extends State<RecipeList> {
     // TODO: query from db
     // append into mycards
 
-    for (int counter = 0; counter < 3; counter++) {
+    for (int counter = 0; counter < 60; counter++) {
       mycards.add(MyCard(counter: counter));
     }
     //var ingredients = dbHelper.getAllIngredient();
@@ -79,26 +71,21 @@ class MyCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.lightBlue,
-      child: ListTile(
-        title: Container(
-            child: Row(children: [
-          Text('Image'),
-          Column(children: [
-            Text(wordPair.toString()),
-            Container(
-                child: Column(children: [
-              Row(children: [
-                Text('Serving: $serving'),
+      child: Container(
+          child: Row(children: [
+        Text('Image'),
+        Column(children: [
+          Text(wordPair.toString()),
+          Container(
+              child: Column(children: [
+            Row(children: [
+              Text('Serving: $serving'),
 //                Text('Tag 2'),
-              ]),
-            ]))
-          ]),
-          Text('Time needed: '),
-        ])),
-        onTap: () {
-          print('aa');
-        },
-      ),
+            ]),
+          ]))
+        ]),
+        Text('Time needed: '),
+      ])),
     );
   }
 }
@@ -147,200 +134,6 @@ class MyDrawer extends StatelessWidget {
               }),
           //ListTile(title: Text('Item 2'), onTap: () {}),
         ],
-      ),
-    );
-  }
-}
-
-Future navigateToEastern(context) async {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => Eastern()));
-}
-
-Future navigateToWestern(context) async {
-  Navigator.push(context, MaterialPageRoute(builder: (context) => Western()));
-}
-
-Future navigateToVegetarian(context) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => Vegetarian()));
-}
-
-Future navigateToManageIngredient(context) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => ManageIngredient()));
-}
-
-Future navigateToIngredientList(context) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => IngredientList()));
-}
-
-class MyCardLoop extends StatelessWidget {
-  //final wordPair = WordPair.random();
-
-  String foodName, serving, timeNeeded;
-
-  MyCardLoop([this.foodName, this.serving, this.timeNeeded]);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.lightBlue,
-      child: ListTile(
-        title: Container(
-            child: Row(children: [
-          Text('Image'),
-          Column(children: [
-            //Text(wordPair.toString()),
-            Container(
-                child: Column(children: [
-              Text('Food Name: $serving'),
-              Row(children: [
-                Text('Serving: $serving'),
-//                Text('Tag 2'),
-              ]),
-            ]))
-          ]),
-          Text('Time needed: '),
-        ])),
-        onTap: () {
-          print('aa');
-        },
-      ),
-    );
-  }
-}
-
-class MyCardIngList extends StatelessWidget {
-  //final wordPair = WordPair.random();
-
-  String ingName, ingUnit, ingExpiry;
-  int ingID;
-  String ingQuantity;
-
-  final ingredientController = TextEditingController();
-  final quantityController = TextEditingController();
-  final unitController = TextEditingController();
-  final dateController = TextEditingController();
-
-  MyCardIngList(
-      [this.ingID,
-      this.ingName,
-      this.ingQuantity,
-      this.ingUnit,
-      this.ingExpiry]);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      color: Colors.lightBlue,
-      child: ListTile(
-        title: Container(
-            child: Row(children: [
-          Text('Name: ' + this.ingName),
-          Column(children: [
-            Text('Quantity: ' +
-                this.ingQuantity.toString() +
-                ' ' +
-                this.ingUnit),
-            Text('Expiry: ' + this.ingExpiry),
-          ]),
-        ])),
-        onTap: () {
-          //print('ID: ' + this.ingID.toString());
-          toast('ID: ' + this.ingID.toString());
-          showDialog(
-              child: new Dialog(
-                child: new Column(
-                  children: <Widget>[
-                    new TextField(
-                      controller: ingredientController,
-                      decoration: new InputDecoration(
-                          hintText: 'Name: ' + this.ingName),
-                    ),
-//                    new TextField(
-//                      controller: quantityController,
-//                      decoration: new InputDecoration(
-//                          hintText: "Quantity: " + this.ingQuantity),
-//                    ),
-                    TextField(
-                      //obscureText: true,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Quantity',
-                      ),
-                      keyboardType: TextInputType.number,
-                      controller: quantityController,
-                    ),
-
-                    new TextField(
-                      controller: unitController,
-                      decoration: new InputDecoration(
-                          hintText: "Unit: " + this.ingUnit),
-                    ),
-//                    new TextField(
-//                      controller: dateController,
-//                      decoration: new InputDecoration(
-//                          hintText: "Date: " + this.ingExpiry),
-//                    ),
-
-                    GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          //print('haha');
-                          var currentDate = new DateTime.now();
-                          DatePicker.showDatePicker(context,
-                              showTitleActions: true,
-                              minTime: currentDate, onConfirm: (date) {
-                                dateController.text = date.toString().substring(0, 10);
-
-//                  print('confirm $date');
-                              }, currentTime: DateTime.now(), locale: LocaleType.en);
-                        },
-                        child: TextField(
-                          controller: dateController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Date',
-                            enabled: false,
-                          ),
-                        )),
-
-
-                    new FlatButton(
-                      child: new Text("Update"),
-                      onPressed: () {
-                        String query = 'UPDATE INGREDIENT SET ingName="' +
-                            ingredientController.text +
-                            '", ingQuantity="' +
-                            quantityController.text +
-                            '", ingUnit="' +
-                            unitController.text +
-                            '", ingExpiry="' +
-                            dateController.text +
-                            '" WHERE ingID="' +
-                            this.ingID.toString() +
-                            '";';
-                        dbHelper.executeQuery(query);
-                        print(query);
-
-                        Navigator.pop(context);
-                      },
-                    ),
-                    new FlatButton(
-                        child: new Text("Detele"),
-                        onPressed: () {
-                          String query = 'DELETE FROM INGREDIENT WHERE ingID=' +
-                              (this.ingID).toString();
-                          dbHelper.executeQuery(query);
-                          //setState(() {});
-                          Navigator.pop(context);
-                        })
-                  ],
-                ),
-              ),
-              context: context);
-        },
       ),
     );
   }
