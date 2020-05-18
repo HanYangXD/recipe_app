@@ -13,12 +13,12 @@ class ManageIngredient extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          appBar: AppBar(
-            title: Text('Manage Ingredient'),
-          ),
-          body: Center(child: MyIngredient()),
-          drawer: MyDrawer(),
-        );
+      appBar: AppBar(
+        title: Text('Manage Ingredient'),
+      ),
+      body: Center(child: MyIngredient()),
+      drawer: MyDrawer(),
+    );
   }
 }
 
@@ -41,13 +41,14 @@ class MyIngredientState extends State<MyIngredient> {
     'Gram',
   ];
   String dropdownValue = 'Gram';
-  String holder = '' ;
+  String holder = '';
 
-  void getDropDownItem(){
-    setState((){
+  void getDropDownItem() {
+    setState(() {
       holder = dropdownValue;
     });
   }
+
   // homepage layout
 
   @override
@@ -89,21 +90,20 @@ class MyIngredientState extends State<MyIngredient> {
                 ),
               ),
               Expanded(
-
-                child: DropdownButton<String>(
-
-                  value: dropdownValue,
-                  onChanged: (String data) {setState(() {
+                  child: DropdownButton<String>(
+                value: dropdownValue,
+                onChanged: (String data) {
+                  setState(() {
                     dropdownValue = data;
-                  });},
-                  items: unitDDL.map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
-                      value: value,
-                      child: Text(value),
-                    );
-                  }).toList(),
-                )
-              )
+                  });
+                },
+                items: unitDDL.map<DropdownMenuItem<String>>((String value) {
+                  return DropdownMenuItem<String>(
+                    value: value,
+                    child: Text(value),
+                  );
+                }).toList(),
+              ))
             ],
           ),
           GestureDetector(
@@ -172,15 +172,15 @@ class MyIngredientState extends State<MyIngredient> {
   // Button onPressed methods
 
   void insertIngredient() async {
-    String ingName=ingredientController.text;
-    String ingQuantity=quantityController.text;
-    String ingUnit=dropdownValue;
-    String ingExpiry=dateController.text;
-    String query = 'INSERT INTO ingredient (ingName, ingQuantity, ingUnit, ingExpiry) VALUES ("$ingName", "$ingQuantity","$ingUnit","$ingExpiry");';
+    String ingName = ingredientController.text;
+    String ingQuantity = quantityController.text;
+    String ingUnit = dropdownValue;
+    String ingExpiry = dateController.text;
+    String query =
+        'INSERT INTO ingredient (ingName, ingQuantity, ingUnit, ingExpiry) VALUES ("$ingName", "$ingQuantity","$ingUnit","$ingExpiry");';
     toast(query);
     dbHelper.insertIngredient(query);
-
-}
+  }
 
 //not in used anymore
   void _insert() async {
@@ -194,10 +194,8 @@ class MyIngredientState extends State<MyIngredient> {
     };
 
     final id = await dbHelper.insert(ingredientRow);
-    final snackBar = SnackBar(content: Text('Yay! inserted row id: $id!'));
     toast('Yay! inserted row id: $id!');
   }
-
 
   void _query() async {
     final allRows = await dbHelper.queryAllRows();
@@ -222,10 +220,7 @@ class MyIngredientState extends State<MyIngredient> {
     final rowsDeleted = await dbHelper.delete(id);
     print('deleted $rowsDeleted row(s): row $id');
   }
-
-
 }
-
 
 void toast(String msgs) {
   Fluttertoast.showToast(

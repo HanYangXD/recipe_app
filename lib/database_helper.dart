@@ -1,31 +1,29 @@
-
 import 'dart:io';
 
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path_provider/path_provider.dart';
-import 'main.dart';
-import 'manageIngredient.dart';
 
 class DatabaseHelper {
-
   static final _databaseName = "MyDatabase.db";
   static final _databaseVersion = 1;
 
   static final table = 'ingredient';
 
-  static final ingredientID     = 'ingID';
-  static final ingredientName   = 'ingName';
+  static final ingredientID = 'ingID';
+  static final ingredientName = 'ingName';
   static final ingredientQuantity = 'ingQuantity';
   static final ingredientUnit = 'ingUnit';
   static final ingredientExpiry = 'ingExpiry';
 
   // make this a singleton class
   DatabaseHelper._privateConstructor();
+
   static final DatabaseHelper instance = DatabaseHelper._privateConstructor();
 
   // only have a single app-wide reference to the database
   static Database _database;
+
   Future<Database> get database async {
     if (_database != null) return _database;
     // lazily instantiate the db the first time it is accessed
@@ -38,8 +36,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   // SQL code to create the database table
@@ -72,19 +69,18 @@ class DatabaseHelper {
     return await db.query(table);
   }
 
-
-
-  Future<List<Map<String, dynamic>>> queryWhere(String table, String where) async {
+  Future<List<Map<String, dynamic>>> queryWhere(
+      String table, String where) async {
     Database db = await instance.database;
     return await db.query(table, where: where);
   }
-
 
   // All of the methods (insert, query, update, delete) can also be done using
   // raw SQL commands. This method uses a raw query to give the row count.
   Future<int> queryRowCount() async {
     Database db = await instance.database;
-    return Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM $table'));
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $table'));
   }
 
   Future<List> executeQuery(String query) async {
@@ -105,10 +101,8 @@ class DatabaseHelper {
 //      print(result[0]["ingID"]);
 //    }
 
-
     return result;
   }
-
 
   Future<List> insertIngredient(String query) async {
     Database db = await instance.database;
@@ -121,12 +115,8 @@ class DatabaseHelper {
 //      print(result[0]["ingID"]);
 //    }
 
-
     return result;
   }
-
-
-
 
 //  createCustomer(Customer customer) async {
 //    var result = await database.rawInsert(
