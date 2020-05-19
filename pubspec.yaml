@@ -35,6 +35,7 @@ dependencies:
   flutter_advanced_networkimage: ^0.7.0
   flappy_search_bar: ^1.7.2
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

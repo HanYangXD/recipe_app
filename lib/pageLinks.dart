@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:recipeapp/main.dart';
+import 'package:recipeapp/recipeInfo.dart';
 import 'package:recipeapp/vegetarianRecipe.dart';
 import 'package:recipeapp/westernRecipe.dart';
 
@@ -35,4 +36,9 @@ Future navigateToIngredientList(context) async {
 Future navigateToHome(context) async {
   Navigator.push(
       context, MaterialPageRoute(builder: (context) => MyApp()));
+}
+
+Future navigateToRecipeInfo(context) async {
+  Navigator.push(
+      context, MaterialPageRoute(builder: (context) => RecipeInfo()));
 }

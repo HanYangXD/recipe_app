@@ -21,6 +21,9 @@ class MyApp extends StatelessWidget {
         home: Scaffold(
             appBar: AppBar(
               title: Text('Recipes'),
+              actions: <Widget>[
+                IconButton(icon: Icon(Icons.search),onPressed: (){},)
+              ],
             ),
             body: Center(child: RecipeList()),
             drawer: MyDrawer()));
@@ -56,8 +59,6 @@ class RecipeListState extends State<RecipeList> {
     });
   }
 
-
-
   List<Widget> recipeListCard = new List<Widget>();
   var allRecipe;
 
@@ -65,21 +66,22 @@ class RecipeListState extends State<RecipeList> {
 //    String query = 'INSERT INTO recipe values (1, "Fried Rice", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)';
 //    dbHelper.executeQuery(query);
     allRecipe = await dbHelper.getAllRecipe();
+    var showRecipe = allRecipe;
     var rowCount = await dbHelper.executeQuery('SELECT COUNT(*) FROM recipe');
 
     recipeListCard = new List<Widget>();
     for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
       recipeListCard.add(MyHomeRecipeList(
           deleteCallBack,
-          allRecipe[i]['recipeID'].toString(),
-          allRecipe[i]['recipeName'],
-          allRecipe[i]['stepsNeeded'],
-          allRecipe[i]['imgPath'],
-          allRecipe[i]['timeNeeded'].toString(),
-          allRecipe[i]['serving'].toString()));
+          showRecipe[i]['recipeID'].toString(),
+          showRecipe[i]['recipeName'],
+          showRecipe[i]['stepsNeeded'],
+          showRecipe[i]['imgPath'],
+          showRecipe[i]['timeNeeded'].toString(),
+          showRecipe[i]['serving'].toString()));
+
       print(allRecipe[i]['recipeID']);
     }
-
     this.setState(() {});
   }
 
@@ -88,93 +90,6 @@ class RecipeListState extends State<RecipeList> {
     return ListView(
         padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
         children: recipeListCard);
-  }
-}
-
-class MyHomeRecipeList extends StatelessWidget {
-  final wordPair = WordPair.random();
-  final DeleteCallBack deleteCallBack;
-
-  int counter = 0;
-
-  String recipeID, recipeName, steps, imgpath, time, serving;
-
-  void getIngNeeded(String recipeID) async {
-    var ingNeeded =
-        await dbHelper.executeQuery('SELECT * FROM ingredientNeeded WHERE recipeID="$recipeID"');
-    var rowCount =
-        await dbHelper.executeQuery('SELECT COUNT(*) FROM ingredientNeeded WHERE recipeID="$recipeID"');
-
-    for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
-      print(ingNeeded[i]['recipeID'].toString() + ingNeeded[i]['ingredientName']);
-
-    }
-
-  }
-
-  MyHomeRecipeList(this.deleteCallBack,
-      [this.recipeID,
-      this.recipeName,
-      this.steps,
-      this.imgpath,
-      this.time,
-      this.serving]);
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-        color: Colors.lightBlue,
-        child: ListTile(
-            title: Container(
-                height: 50,
-                child: Row(children: [
-                  //Text('Image'),
-                  Image.network(
-                    this.imgpath,
-                    width: 50,
-                    height: 35,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  Column(children: [
-                    Text(this.recipeName + this.recipeID),
-                    Container(
-                        child: Column(children: [
-                      Row(children: [
-                        Text('Serving: ' + this.serving),
-                      ]),
-                    ]))
-                  ]),
-                  Text('Time: ' + this.time + '\n\t\t\t\t\t\t\t\t\t\tMins'),
-                ])),
-            onTap: () {
-              toast(this.recipeID);
-              getIngNeeded(this.recipeID);
-              showDialog(
-                  child: new Dialog(
-                    child: new Column(
-                      children: [
-                        Image.network(
-                          this.imgpath,
-                        ),
-                        Text(
-                          this.recipeName,
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(""),
-                        Text("Recipe Needed:"),
-
-
-                        new FlatButton(
-                            child: new Text("Detele"),
-                            onPressed: () {
-                              deleteCallBack("0");
-                              Navigator.pop(context);
-                            })
-                      ],
-                    ),
-                  ),
-                  context: context);
-            }));
   }
 }
 
@@ -234,3 +149,126 @@ class MyDrawer extends StatelessWidget {
     );
   }
 }
+
+class MyHomeRecipeList extends StatelessWidget {
+  final wordPair = WordPair.random();
+  final DeleteCallBack deleteCallBack;
+
+  int counter = 0;
+
+  String recipeID, recipeName, steps, imgpath, time, serving;
+  List<Widget> mycards = new List<Widget>();
+
+  void getIngNeeded(String recipeID) async {
+    var ingNeeded = await dbHelper.executeQuery(
+        'SELECT * FROM ingredientNeeded WHERE recipeID="$recipeID"');
+    var rowCount = await dbHelper.executeQuery(
+        'SELECT COUNT(*) FROM ingredientNeeded WHERE recipeID="$recipeID"');
+    mycards = new List<Widget>();
+    for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
+      mycards.add(IngCard(
+          ingNeeded[i]['ingredientName'],
+          ingNeeded[i]['ingredientQuantity'].toString(),
+          ingNeeded[i]['ingredientUnit']));
+      //print(ingNeeded[i]['recipeID'].toString() + ingNeeded[i]['ingredientName']);
+    }
+  }
+
+  MyHomeRecipeList(this.deleteCallBack,
+      [this.recipeID,
+      this.recipeName,
+      this.steps,
+      this.imgpath,
+      this.time,
+      this.serving]);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+        color: Colors.lightBlue,
+        child: ListTile(
+            title: Container(
+                height: 50,
+                child: Row(children: [
+                  //Text('Image'),
+                  Image.network(
+                    this.imgpath,
+                    width: 50,
+                    height: 35,
+                    fit: BoxFit.fitWidth,
+                  ),
+                  Column(children: [
+                    Text(this.recipeName + this.recipeID),
+                    Container(
+                        child: Column(children: [
+                      Row(children: [
+                        Text('Serving: ' + this.serving),
+                      ]),
+                    ]))
+                  ]),
+                  Text('Time: ' + this.time + '\n\t\t\t\t\t\t\t\t\t\tMins'),
+                ])),
+            onTap: () {
+              toast(this.recipeID);
+              getIngNeeded(this.recipeID);
+//              navigateToRecipeInfo(context);
+              showDialog(
+                  child: ListView(children: [
+                    new Dialog(
+                      child: new Column(
+                        children: [
+                          Image.network(
+                            this.imgpath,
+                          ),
+                          Text(
+                            this.recipeName,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Center(
+                            child: Row(children: [
+                              Column(children: mycards, mainAxisAlignment: MainAxisAlignment.center),
+                            ]),
+                          ),
+                          Card(
+                              child: Column(
+                            children: <Widget>[
+                              new Text(this.steps),
+                            ],
+                          )),
+                          new FlatButton(
+                              child: new Text("Detele"),
+                              onPressed: () {
+                                deleteCallBack("0");
+                                Navigator.pop(context);
+                              })
+                        ],
+                      ),
+                    )
+                  ]),
+                  context: context);
+            }));
+  }
+}
+
+class IngCard extends StatelessWidget {
+  String ingName, ingQuantity, ingUnit;
+
+  IngCard([this.ingName, this.ingQuantity, this.ingUnit]);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: Colors.lightBlue,
+      child: Column(
+        children: <Widget>[
+          Text(this.ingName + " " + this.ingQuantity + " " + this.ingUnit),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
