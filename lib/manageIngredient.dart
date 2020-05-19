@@ -37,7 +37,7 @@ class MyIngredientState extends State<MyIngredient> {
 
   //String a = '11';
   List<String> unitDDL = [
-    'Piece',
+    'Unit',
     'Gram',
   ];
   String dropdownValue = 'Gram';
@@ -137,33 +137,7 @@ class MyIngredientState extends State<MyIngredient> {
               insertIngredient();
             },
           ),
-          RaisedButton(
-            child: Text(
-              'query',
-              style: TextStyle(fontSize: 20),
-            ),
-            onPressed: () {
-              _query();
-            },
-          ),
-          RaisedButton(
-            child: Text(
-              'update',
-              style: TextStyle(fontSize: 20),
-            ),
-            onPressed: () {
-              //_update();
-            },
-          ),
-          RaisedButton(
-            child: Text(
-              'delete',
-              style: TextStyle(fontSize: 20),
-            ),
-            onPressed: () {
-              _delete();
-            },
-          ),
+
         ],
       ),
     ]));

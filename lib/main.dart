@@ -252,19 +252,21 @@ class MyHomeRecipeList extends StatelessWidget {
         color: Colors.lightBlue,
         child: ListTile(
             title: Container(
-                height: 250,
-                child: Column(children: [
-                  //Text('Image'),
-                  Image.network(
-                    this.imgpath,
-//                    width: 50,
-//                    height: 35,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  Text(this.recipeName + this.recipeID),
-                  Text('Serving: ' + this.serving),
-                  Text('Time: ' + this.time + '\n\t\t\t\t\t\t\t\t\t\tMins'),
-                ])),
+                height: 110,
+                child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      //Text('Image'),
+                      Image.network(
+                        this.imgpath,
+                        fit: BoxFit.fitHeight,
+                        height: 50,
+                        //fit: BoxFit.fitWidth,
+                      ),
+                      Text(this.recipeName),
+                      Text('Serving: ' + this.serving),
+                      Text('Time: ' + this.time + 'Minutes'),
+                    ])),
             onTap: () {
               toast(this.recipeID);
               getIngNeeded(this.recipeID);
