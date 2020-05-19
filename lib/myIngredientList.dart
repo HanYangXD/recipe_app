@@ -201,7 +201,7 @@ class MyCardIngList extends StatelessWidget {
                             '";';
                         dbHelper.executeQuery(query);
                         print(query);
-
+                        deleteCallBack("0");
                         Navigator.pop(context);
                       },
                     ),
@@ -212,7 +212,7 @@ class MyCardIngList extends StatelessWidget {
                               (this.ingID).toString();
                           dbHelper.executeQuery(query);
                           //setState(() {});
-                          deleteCallBack("!");
+                          deleteCallBack("0");
                           Navigator.pop(context);
                         })
                   ],
