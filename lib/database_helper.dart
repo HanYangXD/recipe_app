@@ -42,14 +42,66 @@ class DatabaseHelper {
   // SQL code to create the database table
   Future _onCreate(Database db, int version) async {
     await db.execute('''
-          CREATE TABLE $table (
-            $ingredientID INTEGER AUTOINCREMENT PRIMARY KEY,
-            $ingredientName TEXT NOT NULL,
-            $ingredientQuantity DOUBLE NOT NULL,
-            $ingredientUnit TEXT NOT NULL,
-            $ingredientExpiry DATE NOT NULL
+          CREATE TABLE ingredient (
+            ingID INTEGER PRIMARY KEY,
+            ingName TEXT NOT NULL,
+            ingQuantity DOUBLE NOT NULL,
+            ingUnit TEXT NOT NULL,
+            ingExpiry DATE NOT NULL
           )
           ''');
+    await db.execute('''
+          CREATE TABLE recipe (
+            recipeID INTEGER PRIMARY KEY,
+            recipeName TEXT NOT NULL,
+            stepsNeeded TEXT NOT NULL,
+            imgPath TEXT NOT NULL,
+            timeNeeded INTEGER NOT NULL,
+            serving INTEGER NOT NULL
+          )
+          ''');
+    await db.execute('''
+          CREATE TABLE ingredientNeeded (
+            recipeID INTEGER,
+            
+            ingredientName TEXT NOT NULL,
+            ingredientQuantity DOUBLE NOT NULL,
+            ingredientUnit TEXT NOT NULL,
+            primary key(recipeID, ingredientName)
+            
+          )
+          ''');
+
+    await db.execute('''
+          INSERT INTO ingredientNeeded values (1, "rice", 300.0, "gram",)
+    ''');
+
+    await db.execute('''
+          INSERT INTO recipe values (1, "USA Fried Rice", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 60, 2)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (2, "2", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');await db.execute('''
+          INSERT INTO recipe values (3, "3", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (4, "4", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (5, "5", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (6, "6", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (7, "7", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (8, "8", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
+    await db.execute('''
+          INSERT INTO recipe values (9, "9", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)
+    ''');
   }
 
   // Helper methods
@@ -87,6 +139,12 @@ class DatabaseHelper {
     Database db = await instance.database;
     var result = await db.rawQuery(query);
     //print(result);
+    return result;
+  }
+
+  Future<List> getAllRecipe() async {
+    Database db = await instance.database;
+    var result = await db.rawQuery('SELECT * FROM recipe');
     return result;
   }
 
