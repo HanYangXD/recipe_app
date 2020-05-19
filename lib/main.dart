@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'database_helper.dart';
@@ -68,7 +69,6 @@ class RecipeListState extends State<RecipeList> {
     showRecipe = allRecipe;
     var rowCount = await dbHelper.executeQuery('SELECT COUNT(*) FROM recipe');
 
-
     this.setState(() {});
   }
 
@@ -88,12 +88,9 @@ class RecipeListState extends State<RecipeList> {
 
     recipeListCard.insert(0, _searchBar());
 
-
     return ListView(
         padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
-//        children: <Widget>[]);
         children: recipeListCard);
-
   }
 
   Widget _searchBar() {
@@ -101,32 +98,39 @@ class RecipeListState extends State<RecipeList> {
     return Row(
       children: <Widget>[
         Expanded(
-            child:TextField(
-              controller: searchController,
-            )
-        ),
+            child: TextField(
+          controller: searchController,
+        )),
         IconButton(
-          icon: Icon(Icons.search),
-          onPressed: () {
-            setState(() {
-              var temp = new List<Map>();
-              showRecipe = allRecipe;
-              for (var r in showRecipe) {
-                
-                if(r["recipeName"].toString().toLowerCase().indexOf(searchController.text) != -1) {
-                  temp.add(r);
-                }
-              }
+            icon: Icon(Icons.search),
+            onPressed: () {
+              setState(
+                () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                  var temp = new List<Map>();
+                  showRecipe = allRecipe;
+                  for (var r in showRecipe) {
+                    if (r["recipeName"]
+                            .toString()
+                            .toLowerCase()
+                            .indexOf(searchController.text) !=
+                        -1) {
+                      temp.add(r);
+                    }
+                  }
 
-              showRecipe = temp;
-            },);
-        }),
+                  showRecipe = temp;
+                },
+              );
+            }),
         IconButton(
             icon: Icon(Icons.cancel),
             onPressed: () {
-              setState(() {
-                showRecipe = allRecipe;
-              },);
+              setState(
+                () {
+                  showRecipe = allRecipe;
+                },
+              );
             })
       ],
     );
@@ -143,12 +147,11 @@ class SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return Row(
       children: <Widget>[
-        Expanded(
-            child:TextField()
-        ),
-        IconButton(icon: Icon(Icons.search), onPressed: () {
-
-        },)
+        Expanded(child: TextField()),
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {},
+        )
       ],
     );
   }
@@ -249,30 +252,22 @@ class MyHomeRecipeList extends StatelessWidget {
         color: Colors.lightBlue,
         child: ListTile(
             title: Container(
-                height: 50,
-                child: Row(children: [
+                height: 250,
+                child: Column(children: [
                   //Text('Image'),
                   Image.network(
                     this.imgpath,
-                    width: 50,
-                    height: 35,
+//                    width: 50,
+//                    height: 35,
                     fit: BoxFit.fitWidth,
                   ),
-                  Column(children: [
-                    Text(this.recipeName + this.recipeID),
-                    Container(
-                        child: Column(children: [
-                      Row(children: [
-                        Text('Serving: ' + this.serving),
-                      ]),
-                    ]))
-                  ]),
+                  Text(this.recipeName + this.recipeID),
+                  Text('Serving: ' + this.serving),
                   Text('Time: ' + this.time + '\n\t\t\t\t\t\t\t\t\t\tMins'),
                 ])),
             onTap: () {
               toast(this.recipeID);
               getIngNeeded(this.recipeID);
-//              navigateToRecipeInfo(context);
               showDialog(
                   child: ListView(children: [
                     new Dialog(
@@ -322,10 +317,9 @@ class IngCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       color: Colors.lightBlue,
-      child: Column(
-        children: <Widget>[
-          Text(this.ingName + " " + this.ingQuantity + " " + this.ingUnit),
-        ],
+      child: Align(
+        alignment: Alignment.center,
+        child: Text(this.ingName + " " + this.ingQuantity + " " + this.ingUnit),
       ),
     );
   }
