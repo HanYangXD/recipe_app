@@ -27,6 +27,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+var ingNeeded;
 final dbHelper = DatabaseHelper.instance;
 
 class RecipeList extends StatefulWidget {
@@ -35,18 +36,15 @@ class RecipeList extends StatefulWidget {
 }
 
 class RecipeListState extends State<RecipeList> {
-  List<Widget> mycards = new List<Widget>();
+  //List<Widget> mycards = new List<Widget>();
   int buttonName = 1;
 
   @override
   void initState() {
     // TODO: query from db
-    // append into mycards
+
     fetchRecipeToCard();
-//    for (int counter = 0; counter < 60; counter++) {
-//      mycards.add(MyCard(this.deleteCallBack("0")));
-//    }
-    //var ingredients = dbHelper.getAllIngredient();
+
     super.initState();
   }
 
@@ -57,6 +55,8 @@ class RecipeListState extends State<RecipeList> {
       fetchRecipeToCard();
     });
   }
+
+
 
   List<Widget> recipeListCard = new List<Widget>();
   var allRecipe;
@@ -69,7 +69,7 @@ class RecipeListState extends State<RecipeList> {
 
     recipeListCard = new List<Widget>();
     for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
-      recipeListCard.add(MyCard(
+      recipeListCard.add(MyHomeRecipeList(
           deleteCallBack,
           allRecipe[i]['recipeID'].toString(),
           allRecipe[i]['recipeName'],
@@ -91,14 +91,28 @@ class RecipeListState extends State<RecipeList> {
   }
 }
 
-class MyCard extends StatelessWidget {
+class MyHomeRecipeList extends StatelessWidget {
   final wordPair = WordPair.random();
   final DeleteCallBack deleteCallBack;
+
   int counter = 0;
 
   String recipeID, recipeName, steps, imgpath, time, serving;
 
-  MyCard(this.deleteCallBack,
+  void getIngNeeded(String recipeID) async {
+    var ingNeeded =
+        await dbHelper.executeQuery('SELECT * FROM ingredientNeeded WHERE recipeID="$recipeID"');
+    var rowCount =
+        await dbHelper.executeQuery('SELECT COUNT(*) FROM ingredientNeeded WHERE recipeID="$recipeID"');
+
+    for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
+      print(ingNeeded[i]['recipeID'].toString() + ingNeeded[i]['ingredientName']);
+
+    }
+
+  }
+
+  MyHomeRecipeList(this.deleteCallBack,
       [this.recipeID,
       this.recipeName,
       this.steps,
@@ -127,7 +141,6 @@ class MyCard extends StatelessWidget {
                         child: Column(children: [
                       Row(children: [
                         Text('Serving: ' + this.serving),
-//                Text('Tag 2'),
                       ]),
                     ]))
                   ]),
@@ -135,10 +148,11 @@ class MyCard extends StatelessWidget {
                 ])),
             onTap: () {
               toast(this.recipeID);
+              getIngNeeded(this.recipeID);
               showDialog(
                   child: new Dialog(
                     child: new Column(
-                      children: <Widget>[
+                      children: [
                         Image.network(
                           this.imgpath,
                         ),
@@ -146,20 +160,13 @@ class MyCard extends StatelessWidget {
                           this.recipeName,
                           style: TextStyle(fontWeight: FontWeight.bold),
                         ),
-                        Text(),
-                        Text(
-                          "Recipe Needed:"
-                        ),
-                        Text(
-                          "haha"
-                        ),
+                        Text(""),
+                        Text("Recipe Needed:"),
+
+
                         new FlatButton(
                             child: new Text("Detele"),
                             onPressed: () {
-//                              String query = 'DELETE FROM INGREDIENT WHERE ingID=' +
-//                                  (this.ingID).toString();
-//                              dbHelper.executeQuery(query);
-                              //setState(() {});
                               deleteCallBack("0");
                               Navigator.pop(context);
                             })

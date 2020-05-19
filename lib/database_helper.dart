@@ -75,13 +75,21 @@ class DatabaseHelper {
     await db.execute('''
           INSERT INTO ingredientNeeded values (1, "rice", 300.0, "gram")
     ''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "rice", 450.0, "gram")''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "ham" ,350.0 , "gram")''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "eggs", 2,"unit")''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "fried rice seasoning", 5,"gram")''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "salt", 5,"gram")''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "oil", 20 ,"gram")''');
-    await db.execute('''INSERT INTO ingredientNeeded VALUES(2, "green onion", 30 ,"gram")''');
+    await db.execute('''
+          INSERT INTO ingredientNeeded VALUES (2, "rice", 450.0, "gram")
+    ''');
+    await db.execute(
+        '''INSERT INTO ingredientNeeded VALUES (2, "ham" ,350.0 , "gram")''');
+    await db.execute(
+        '''INSERT INTO ingredientNeeded VALUES (2, "eggs", 2,"unit")''');
+    await db.execute(
+        '''INSERT INTO ingredientNeeded VALUES (2, "fried rice seasoning", 5,"gram")''');
+    await db.execute(
+        '''INSERT INTO ingredientNeeded VALUES (2, "salt", 5,"gram")''');
+    await db.execute(
+        '''INSERT INTO ingredientNeeded VALUES (2, "oil", 20 ,"gram")''');
+    await db.execute(
+        '''INSERT INTO ingredientNeeded VALUES (2, "green onion", 30 ,"gram")''');
 
     await db.execute('''
           INSERT INTO recipe VALUES (2, "Island Fried Rice", "cook rice in rice cooker, let it cool, add oil into wok,scramble eggs,add ham and fry, add cooled rice and stir till heated through, add fried rice seasoning mix and stir, add salt and pepper to taste, serve with chopped green onion on top", "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fimages.media-allrecipes.com%2Fuserphotos%2F1503663.jpg&w=596&h=399&c=sc&poi=face&q=85", 40, 2);
@@ -138,6 +146,11 @@ class DatabaseHelper {
     Database db = await instance.database;
     return Sqflite.firstIntValue(
         await db.rawQuery('SELECT COUNT(*) FROM $table'));
+  }
+  Future<int> getRowCount(String tablename) async {
+    Database db = await instance.database;
+    return Sqflite.firstIntValue(
+        await db.rawQuery('SELECT COUNT(*) FROM $tablename'));
   }
 
   Future<List> executeQuery(String query) async {
