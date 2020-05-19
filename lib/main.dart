@@ -11,7 +11,12 @@ import 'GlobalDef.dart';
 
 void main() => runApp(MyApp());
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  MyAppState createState() => MyAppState();
+}
+
+class MyAppState extends State<MyApp> {
   final dbHelper = DatabaseHelper.instance;
 
   @override
@@ -21,9 +26,6 @@ class MyApp extends StatelessWidget {
         home: Scaffold(
             appBar: AppBar(
               title: Text('Recipes'),
-              actions: <Widget>[
-                IconButton(icon: Icon(Icons.search),onPressed: (){},)
-              ],
             ),
             body: Center(child: RecipeList()),
             drawer: MyDrawer()));
@@ -45,14 +47,11 @@ class RecipeListState extends State<RecipeList> {
   @override
   void initState() {
     // TODO: query from db
-
     fetchRecipeToCard();
-
     super.initState();
   }
 
   void deleteCallBack(String id) {
-    //id =
     setState(() {
       // re-fetch card from database
       fetchRecipeToCard();
@@ -60,17 +59,23 @@ class RecipeListState extends State<RecipeList> {
   }
 
   List<Widget> recipeListCard = new List<Widget>();
-  var allRecipe;
+  var allRecipe, showRecipe;
 
   void fetchRecipeToCard() async {
 //    String query = 'INSERT INTO recipe values (1, "Fried Rice", "cook rice, let it cold, put oil, heat, fry, season, done", "/imgpath.png", 30, 5)';
 //    dbHelper.executeQuery(query);
     allRecipe = await dbHelper.getAllRecipe();
-    var showRecipe = allRecipe;
+    showRecipe = allRecipe;
     var rowCount = await dbHelper.executeQuery('SELECT COUNT(*) FROM recipe');
 
+
+    this.setState(() {});
+  }
+
+  @override
+  Widget build(BuildContext context) {
     recipeListCard = new List<Widget>();
-    for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
+    for (int i = 0; i < showRecipe.length; i++) {
       recipeListCard.add(MyHomeRecipeList(
           deleteCallBack,
           showRecipe[i]['recipeID'].toString(),
@@ -79,17 +84,73 @@ class RecipeListState extends State<RecipeList> {
           showRecipe[i]['imgPath'],
           showRecipe[i]['timeNeeded'].toString(),
           showRecipe[i]['serving'].toString()));
-
-      print(allRecipe[i]['recipeID']);
     }
-    this.setState(() {});
-  }
 
-  @override
-  Widget build(BuildContext context) {
+    recipeListCard.insert(0, _searchBar());
+
+
     return ListView(
         padding: EdgeInsets.fromLTRB(16.0, 12.0, 16.0, 8.0),
+//        children: <Widget>[]);
         children: recipeListCard);
+
+  }
+
+  Widget _searchBar() {
+    TextEditingController searchController = TextEditingController();
+    return Row(
+      children: <Widget>[
+        Expanded(
+            child:TextField(
+              controller: searchController,
+            )
+        ),
+        IconButton(
+          icon: Icon(Icons.search),
+          onPressed: () {
+            setState(() {
+              var temp = new List<Map>();
+              showRecipe = allRecipe;
+              for (var r in showRecipe) {
+                
+                if(r["recipeName"].toString().toLowerCase().indexOf(searchController.text) != -1) {
+                  temp.add(r);
+                }
+              }
+
+              showRecipe = temp;
+            },);
+        }),
+        IconButton(
+            icon: Icon(Icons.cancel),
+            onPressed: () {
+              setState(() {
+                showRecipe = allRecipe;
+              },);
+            })
+      ],
+    );
+  }
+}
+
+class SearchBar extends StatefulWidget {
+  @override
+  SearchBarState createState() => SearchBarState();
+}
+
+class SearchBarState extends State<SearchBar> {
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        Expanded(
+            child:TextField()
+        ),
+        IconButton(icon: Icon(Icons.search), onPressed: () {
+
+        },)
+      ],
+    );
   }
 }
 
@@ -226,7 +287,9 @@ class MyHomeRecipeList extends StatelessWidget {
                           ),
                           Center(
                             child: Row(children: [
-                              Column(children: mycards, mainAxisAlignment: MainAxisAlignment.center),
+                              Column(
+                                  children: mycards,
+                                  mainAxisAlignment: MainAxisAlignment.center),
                             ]),
                           ),
                           Card(
@@ -267,8 +330,3 @@ class IngCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
