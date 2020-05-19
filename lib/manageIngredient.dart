@@ -135,6 +135,9 @@ class MyIngredientState extends State<MyIngredient> {
             onPressed: () {
 //              _insert();
               insertIngredient();
+              setState(() {
+                FocusScope.of(context).requestFocus(FocusNode());
+              });
             },
           ),
 

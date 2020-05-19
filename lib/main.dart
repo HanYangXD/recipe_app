@@ -247,10 +247,10 @@ class MyHomeRecipeList extends StatelessWidget {
                       ),
                       Text(this.recipeName),
                       Text('Serving: ' + this.serving),
-                      Text('Time: ' + this.time + 'Minutes'),
+                      Text('Time: ' + this.time + ' Minutes'),
                     ])),
             onTap: () {
-              toast(this.recipeID);
+              //toast(this.recipeID);
               getIngNeeded(this.recipeID);
               showDialog(
                   child: ListView(children: [
