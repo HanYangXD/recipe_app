@@ -74,10 +74,8 @@ class MyIngredientListState extends State<MyIngredientList> {
     return Center(
         child: ListView(
             children:
-                // MyCardLoop(),
                 mycards
 
-            // child: Text('img')
             ));
   }
 }
@@ -223,4 +221,5 @@ class MyCardIngList extends StatelessWidget {
       ),
     );
   }
+
 }
