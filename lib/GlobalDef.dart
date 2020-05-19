@@ -1,0 +1,1 @@
+typedef DeleteCallBack = Function(String id);

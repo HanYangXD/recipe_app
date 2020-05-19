@@ -3,6 +3,7 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'database_helper.dart';
 import 'main.dart';
 import 'manageIngredient.dart';
+import 'GlobalDef.dart';
 
 class IngredientList extends StatelessWidget {
   @override
@@ -31,11 +32,20 @@ class MyIngredientListState extends State<MyIngredientList> {
     super.initState();
   }
 
+  void deleteCallBack(String id) {
+    //id =
+    setState(() {
+      // re-fetch card from database
+      fetchIngToCard();
+    });
+  }
+
   List<Widget> mycards = new List<Widget>();
   var allIngredient;
 
   void fetchIngToCard() async {
     allIngredient = await dbHelper.getAllIngredient();
+
 
     //print(allIngredient);
 //  String rowCount =  dbHelper.queryRowCount().toString();
@@ -46,7 +56,7 @@ class MyIngredientListState extends State<MyIngredientList> {
 
     mycards = new List<Widget>();
     for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
-      mycards.add(MyCardIngList(
+      mycards.add(MyCardIngList(deleteCallBack,
           allIngredient[i]['ingID'],
           allIngredient[i]['ingName'],
           allIngredient[i]['ingQuantity'].toString(),
@@ -74,6 +84,7 @@ class MyIngredientListState extends State<MyIngredientList> {
 
 //cards for ingredient Lists
 class MyCardIngList extends StatelessWidget {
+
   //final wordPair = WordPair.random();
 
   String ingName, ingUnit, ingExpiry;
@@ -85,12 +96,15 @@ class MyCardIngList extends StatelessWidget {
   final unitController = TextEditingController();
   final dateController = TextEditingController();
 
-  MyCardIngList(
+  final DeleteCallBack deleteCallBack;
+
+  MyCardIngList(this.deleteCallBack,
       [this.ingID,
       this.ingName,
       this.ingQuantity,
       this.ingUnit,
-      this.ingExpiry]);
+      this.ingExpiry]
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -198,6 +212,7 @@ class MyCardIngList extends StatelessWidget {
                               (this.ingID).toString();
                           dbHelper.executeQuery(query);
                           //setState(() {});
+                          deleteCallBack("!");
                           Navigator.pop(context);
                         })
                   ],

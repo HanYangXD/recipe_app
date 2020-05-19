@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'database_helper.dart';
 import 'pageLinks.dart';
+import 'GlobalDef.dart';
 
 void main() => runApp(MyApp());
 
@@ -45,6 +46,8 @@ class RecipeListState extends State<RecipeList> {
     //var ingredients = dbHelper.getAllIngredient();
     super.initState();
   }
+
+
 
   @override
   Widget build(BuildContext context) {
