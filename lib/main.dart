@@ -165,7 +165,7 @@ class MyDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            child: Text('Header'),
+            child: Text('Recipe App'),
             decoration: BoxDecoration(
               color: Colors.blue,
             ),
@@ -176,24 +176,6 @@ class MyDrawer extends StatelessWidget {
 //                navigateToEastern(context);
                 navigateToHome(context);
                 print('eastern meal');
-              }),
-          ListTile(
-              title: Text('Eastern Cuisine'),
-              onTap: () {
-//                navigateToEastern(context);
-                print('eastern meal');
-              }),
-          ListTile(
-              title: Text('Western Cuisine'),
-              onTap: () {
-//                navigateToWestern(context);
-                print('western meal');
-              }),
-          ListTile(
-              title: Text('Vegetarian'),
-              onTap: () {
-//                navigateToVegetarian(context);
-                print('vegetarian meal');
               }),
           ListTile(
               title: Text('Add Ingredient'),
@@ -296,7 +278,7 @@ class MyHomeRecipeList extends StatelessWidget {
                             ],
                           )),
                           new FlatButton(
-                              child: new Text("Detele"),
+                              child: new Text("Back to home"),
                               onPressed: () {
                                 deleteCallBack("0");
                                 Navigator.pop(context);

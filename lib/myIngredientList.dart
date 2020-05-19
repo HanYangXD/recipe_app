@@ -89,10 +89,10 @@ class MyCardIngList extends StatelessWidget {
   int ingID;
   String ingQuantity;
 
-  final ingredientController = TextEditingController();
-  final quantityController = TextEditingController();
-  final unitController = TextEditingController();
-  final dateController = TextEditingController();
+
+
+
+
 
   final DeleteCallBack deleteCallBack;
 
@@ -106,6 +106,10 @@ class MyCardIngList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final ingredientController = TextEditingController()..text = this.ingName;
+    final quantityController = TextEditingController()..text = this.ingQuantity;
+    final unitController = TextEditingController()..text = this.ingUnit;
+    final dateController = TextEditingController()..text = this.ingExpiry;
     return Card(
       color: Colors.lightBlue,
       child: ListTile(
@@ -122,7 +126,7 @@ class MyCardIngList extends StatelessWidget {
         ])),
         onTap: () {
           //print('ID: ' + this.ingID.toString());
-          toast('ID: ' + this.ingID.toString());
+          //toast('ID: ' + this.ingID.toString());
           showDialog(
               child: new Dialog(
                 child: new Column(
@@ -132,32 +136,20 @@ class MyCardIngList extends StatelessWidget {
                       decoration: new InputDecoration(
                           hintText: 'Name: ' + this.ingName),
                     ),
-//                    new TextField(
-//                      controller: quantityController,
-//                      decoration: new InputDecoration(
-//                          hintText: "Quantity: " + this.ingQuantity),
-//                    ),
                     TextField(
                       //obscureText: true,
+                      controller: quantityController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'Quantity',
                       ),
                       keyboardType: TextInputType.number,
-                      controller: quantityController,
                     ),
-
                     new TextField(
                       controller: unitController,
                       decoration: new InputDecoration(
                           hintText: "Unit: " + this.ingUnit),
                     ),
-//                    new TextField(
-//                      controller: dateController,
-//                      decoration: new InputDecoration(
-//                          hintText: "Date: " + this.ingExpiry),
-//                    ),
-
                     GestureDetector(
                         behavior: HitTestBehavior.opaque,
                         onTap: () {
@@ -168,8 +160,6 @@ class MyCardIngList extends StatelessWidget {
                               minTime: currentDate, onConfirm: (date) {
                             dateController.text =
                                 date.toString().substring(0, 10);
-
-//                  print('confirm $date');
                           },
                               currentTime: DateTime.now(),
                               locale: LocaleType.en);
@@ -182,7 +172,6 @@ class MyCardIngList extends StatelessWidget {
                             enabled: false,
                           ),
                         )),
-
                     new FlatButton(
                       child: new Text("Update"),
                       onPressed: () {

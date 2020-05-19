@@ -38,7 +38,7 @@ Future navigateToHome(context) async {
       context, MaterialPageRoute(builder: (context) => MyApp()));
 }
 
-Future navigateToRecipeInfo(context) async {
-  Navigator.push(
-      context, MaterialPageRoute(builder: (context) => RecipeInfo()));
-}
+//Future navigateToRecipeInfo(context) async {
+//  Navigator.push(
+//      context, MaterialPageRoute(builder: (context) => RecipeInfo()));
+//}

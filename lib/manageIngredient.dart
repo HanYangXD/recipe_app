@@ -152,7 +152,8 @@ class MyIngredientState extends State<MyIngredient> {
     String ingExpiry = dateController.text;
     String query =
         'INSERT INTO ingredient (ingName, ingQuantity, ingUnit, ingExpiry) VALUES ("$ingName", "$ingQuantity","$ingUnit","$ingExpiry");';
-    toast(query);
+    toast('Added Successfully!');
+    //toast(query);
     dbHelper.insertIngredient(query);
   }
 
