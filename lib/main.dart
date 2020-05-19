@@ -5,6 +5,7 @@
 import 'package:flutter/material.dart';
 import 'package:english_words/english_words.dart';
 import 'database_helper.dart';
+import 'manageIngredient.dart';
 import 'pageLinks.dart';
 import 'GlobalDef.dart';
 
@@ -108,25 +109,65 @@ class MyCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Colors.lightBlue,
-      child: Container(
-          height: 50,
-          child: Row(children: [
-            //Text('Image'),
-            Image.network('https://picsum.photos/250?image=9'),
-            Column(children: [
-              Text(this.recipeName + this.recipeID),
-              Container(
-                  child: Column(children: [
-                Row(children: [
-                  Text('Serving: ' + this.serving),
+        color: Colors.lightBlue,
+        child: ListTile(
+            title: Container(
+                height: 50,
+                child: Row(children: [
+                  //Text('Image'),
+                  Image.network(
+                    this.imgpath,
+                    width: 50,
+                    height: 35,
+                    fit: BoxFit.fitWidth,
+                  ),
+                  Column(children: [
+                    Text(this.recipeName + this.recipeID),
+                    Container(
+                        child: Column(children: [
+                      Row(children: [
+                        Text('Serving: ' + this.serving),
 //                Text('Tag 2'),
-                ]),
-              ]))
-            ]),
-            Text('Time needed: ' + this.time),
-          ])),
-    );
+                      ]),
+                    ]))
+                  ]),
+                  Text('Time: ' + this.time + '\n\t\t\t\t\t\t\t\t\t\tMins'),
+                ])),
+            onTap: () {
+              toast(this.recipeID);
+              showDialog(
+                  child: new Dialog(
+                    child: new Column(
+                      children: <Widget>[
+                        Image.network(
+                          this.imgpath,
+                        ),
+                        Text(
+                          this.recipeName,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(),
+                        Text(
+                          "Recipe Needed:"
+                        ),
+                        Text(
+                          "haha"
+                        ),
+                        new FlatButton(
+                            child: new Text("Detele"),
+                            onPressed: () {
+//                              String query = 'DELETE FROM INGREDIENT WHERE ingID=' +
+//                                  (this.ingID).toString();
+//                              dbHelper.executeQuery(query);
+                              //setState(() {});
+                              deleteCallBack("0");
+                              Navigator.pop(context);
+                            })
+                      ],
+                    ),
+                  ),
+                  context: context);
+            }));
   }
 }
 
