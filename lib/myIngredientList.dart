@@ -46,7 +46,6 @@ class MyIngredientListState extends State<MyIngredientList> {
   void fetchIngToCard() async {
     allIngredient = await dbHelper.getAllIngredient();
 
-
     //print(allIngredient);
 //  String rowCount =  dbHelper.queryRowCount().toString();
     var rowCount =
@@ -56,7 +55,8 @@ class MyIngredientListState extends State<MyIngredientList> {
 
     mycards = new List<Widget>();
     for (int i = 0; i < rowCount[0]['COUNT(*)']; i++) {
-      mycards.add(MyCardIngList(deleteCallBack,
+      mycards.add(MyCardIngList(
+          deleteCallBack,
           allIngredient[i]['ingID'],
           allIngredient[i]['ingName'],
           allIngredient[i]['ingQuantity'].toString(),
@@ -71,38 +71,49 @@ class MyIngredientListState extends State<MyIngredientList> {
 
 //    print(allIngredient);
 
-    return Center(
-        child: ListView(
-            children:
-                mycards
-
-            ));
+    return Center(child: ListView(children: mycards));
   }
 }
 
-//cards for ingredient Lists
-class MyCardIngList extends StatelessWidget {
-
-  //final wordPair = WordPair.random();
-
+class MyCardIngList extends StatefulWidget {
+  final deleteCallBack;
   String ingName, ingUnit, ingExpiry;
   int ingID;
   String ingQuantity;
-
-
-
-
-
-
-  final DeleteCallBack deleteCallBack;
 
   MyCardIngList(this.deleteCallBack,
       [this.ingID,
       this.ingName,
       this.ingQuantity,
       this.ingUnit,
-      this.ingExpiry]
-      );
+      this.ingExpiry]);
+
+  @override
+  MyCardIngListState createState() => MyCardIngListState();
+}
+
+//cards for ingredient Lists
+class MyCardIngListState extends State<MyCardIngList> {
+  //final wordPair = WordPair.random();
+
+  String ingName, ingUnit, ingExpiry;
+  int ingID;
+  String ingQuantity;
+
+  var confirmation = false;
+
+  DeleteCallBack deleteCallBack;
+
+  @override
+  void initState() {
+    ingName = widget.ingName;
+    ingUnit = widget.ingUnit;
+    ingExpiry = widget.ingExpiry;
+    ingID = widget.ingID;
+    ingQuantity = widget.ingQuantity;
+    deleteCallBack = widget.deleteCallBack;
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -110,6 +121,7 @@ class MyCardIngList extends StatelessWidget {
     final quantityController = TextEditingController()..text = this.ingQuantity;
     final unitController = TextEditingController()..text = this.ingUnit;
     final dateController = TextEditingController()..text = this.ingExpiry;
+
     return Card(
       color: Colors.lightBlue,
       child: ListTile(
@@ -128,87 +140,145 @@ class MyCardIngList extends StatelessWidget {
           //print('ID: ' + this.ingID.toString());
           //toast('ID: ' + this.ingID.toString());
           showDialog(
-              child: new Dialog(
-                child: new Column(
-                  children: <Widget>[
-                    new TextField(
-                      controller: ingredientController,
-                      decoration: new InputDecoration(
-                          hintText: 'Name: ' + this.ingName),
-                    ),
-                    TextField(
-                      //obscureText: true,
-                      controller: quantityController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Quantity',
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    new TextField(
-                      controller: unitController,
-                      decoration: new InputDecoration(
-                          hintText: "Unit: " + this.ingUnit),
-                    ),
-                    GestureDetector(
-                        behavior: HitTestBehavior.opaque,
-                        onTap: () {
-                          //print('haha');
-                          var currentDate = new DateTime.now();
-                          DatePicker.showDatePicker(context,
-                              showTitleActions: true,
-                              minTime: currentDate, onConfirm: (date) {
-                            dateController.text =
-                                date.toString().substring(0, 10);
-                          },
-                              currentTime: DateTime.now(),
-                              locale: LocaleType.en);
-                        },
-                        child: TextField(
-                          controller: dateController,
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Date',
-                            enabled: false,
-                          ),
-                        )),
-                    new FlatButton(
-                      child: new Text("Update"),
-                      onPressed: () {
-                        String query = 'UPDATE INGREDIENT SET ingName="' +
-                            ingredientController.text +
-                            '", ingQuantity="' +
-                            quantityController.text +
-                            '", ingUnit="' +
-                            unitController.text +
-                            '", ingExpiry="' +
-                            dateController.text +
-                            '" WHERE ingID="' +
-                            this.ingID.toString() +
-                            '";';
-                        dbHelper.executeQuery(query);
-                        print(query);
-                        deleteCallBack("0");
-                        Navigator.pop(context);
-                      },
-                    ),
-                    new FlatButton(
-                        child: new Text("Detele"),
-                        onPressed: () {
-                          String query = 'DELETE FROM INGREDIENT WHERE ingID=' +
-                              (this.ingID).toString();
-                          dbHelper.executeQuery(query);
-                          //setState(() {});
-                          deleteCallBack("0");
-                          Navigator.pop(context);
-                        })
-                  ],
-                ),
-              ),
+              builder: (context) {
+                return StatefulBuilder(builder: (context, setState) {
+                  return new Dialog(
+                    child: confirmation
+                        ? new Column(children: <Widget>[
+                            Text("Are you sure to delete"),
+                            FlatButton(
+                              child: Text("Yes"),
+                              onPressed: () {
+                                String query =
+                                    'DELETE FROM INGREDIENT WHERE ingID=' +
+                                        (this.ingID).toString();
+                                print (query);
+                                dbHelper.executeQuery(query);
+                                deleteCallBack("0");
+                                setState(() {
+                                  confirmation = !confirmation;
+                                });
+                                Navigator.pop(context);
+                              },
+                            ),
+                            FlatButton(
+                              child: Text("NO"),
+                              onPressed: () {
+                                setState(() {
+                                  confirmation = !confirmation;
+                                });
+                              },
+                            )
+                          ])
+                        : new Column(children: <Widget>[
+                            new TextField(
+                              controller: ingredientController,
+                              decoration: new InputDecoration(
+                                  hintText: 'Name: ' ),
+                            ),
+                            TextField(
+                              //obscureText: true,
+                              controller: quantityController,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Quantity',
+                              ),
+                              keyboardType: TextInputType.number,
+                            ),
+                            new TextField(
+                              controller: unitController,
+                              decoration: new InputDecoration(
+                                  hintText: "Unit: " + this.ingUnit),
+                            ),
+                            GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  //print('haha');
+                                  var currentDate = new DateTime.now();
+                                  DatePicker.showDatePicker(context,
+                                      showTitleActions: true,
+                                      minTime: currentDate, onConfirm: (date) {
+                                    dateController.text =
+                                        date.toString().substring(0, 10);
+                                  },
+                                      currentTime: DateTime.now(),
+                                      locale: LocaleType.en);
+                                },
+                                child: TextField(
+                                  controller: dateController,
+                                  decoration: InputDecoration(
+                                    border: OutlineInputBorder(),
+                                    labelText: 'Date',
+                                    enabled: false,
+                                  ),
+                                )),
+                            new FlatButton(
+                              child: new Text("Update"),
+                              onPressed: () {
+                                String query =
+                                    'UPDATE INGREDIENT SET ingName="' +
+                                        ingredientController.text +
+                                        '", ingQuantity="' +
+                                        quantityController.text +
+                                        '", ingUnit="' +
+                                        unitController.text +
+                                        '", ingExpiry="' +
+                                        dateController.text +
+                                        '" WHERE ingID="' +
+                                        this.ingID.toString() +
+                                        '";';
+                                dbHelper.executeQuery(query);
+                                print(query);
+                                deleteCallBack("0");
+                                Navigator.pop(context);
+                              },
+                            ),
+                            new FlatButton(
+                                child: new Text("Detele"),
+                                onPressed: () {
+                                  setState(() {
+                                    confirmation = !confirmation;
+                                  });
+//                          new AlertDialog(
+//                            title: new Text('Are you sure?'),
+//                            content: new Text ('Press Delete to delete the ingredient'),
+//                            actions: <Widget> [
+//                              new FlatButton(
+//                                child: new Text('Cancel'),showdialo
+//                                onPressed: (){
+//                                  Navigator.of(context).pop();
+//                                }
+//                              ),
+//                              new FlatButton(
+//                                  child: Text('Delete'),
+//                                  onPressed: (){
+//
+////                                    String query = 'DELETE FROM INGREDIENT WHERE ingID=' +
+////                                        (this.ingID).toString();
+////                                    dbHelper.executeQuery(query);
+////                                    //setState(() {});
+////                                    deleteCallBack("0");
+////                                    Navigator.pop(context);
+//
+//
+//                                  }
+//                              )
+//                            ],
+//                          );
+//                            String query = 'DELETE FROM INGREDIENT WHERE ingID=' +
+//                                (this.ingID).toString();
+//                            dbHelper.executeQuery(query);
+//                            //setState(() {});
+//                            deleteCallBack("0");
+//                            Navigator.pop(context);
+                                })
+                          ]),
+                  );
+                });
+              },
               context: context);
         },
       ),
     );
   }
-
 }
